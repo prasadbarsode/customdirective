@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<title>Angular JS Demo</title> 
+<script src="angular.min.js"></script>
+<script src="select.min.js"></script>
+<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>   
+
+    <script>
+    var app = angular.module('myApp' , []);
+    app.controller('CustomDirectiveController', ['$scope', function($scope){
+          //console.log($scope.selectedName);
+		  $scope.contentType = ["en", "de", "others"];
+		  $scope.selectedName = 'others';
+      }]);
+
+
+    app.directive('myFirstCustomHtml', ['$compile', '$http', '$templateCache',function($compile, $http, $templateCache){
+	
+	//https://coderwall.com/p/mgtrkg/variable-templates-for-an-angularjs-directive
+	/*var getTemplate = function(contentType) {
+            var templateLoader,
+            baseUrl = '/templates/',
+			
+            templateMap = {
+                en: 'custom-directive-en.template.html',
+                de: 'custom-directive-de.template.html'
+            };
+
+            var templateUrl = baseUrl + templateMap[contentType];
+			
+            templateLoader = $http.get(templateUrl, {cache: $templateCache});
+			//return templateUrl;
+            return templateLoader;
+        }
+
+        var linker = function(scope, element, attrs) {
+			
+			//console.log(scope.selectedName);
+            var loader = getTemplate(scope.selectedName);
+
+            var promise = loader.success(function(html) {
+                element.html(html);
+            }).then(function (response) {
+                element.replaceWith($compile(element.html())(scope));
+            });
+        }*/
+      return{
+        //restrict: 'E',
+        //template: '<div>Hello World!! {{selectedName}}</div>',
+		templateUrl: function(elem, attr) {
+				return 'custom-directive-' + attr.type + '.template.html';
+		}
+		//scope: {
+         //       selectedName:'='
+        //    },
+		//link: linker
+        //replace: true,
+        //controller: 'CustomDirectiveController'
+      } 
+    }]);
+
+
+    </script>
+</head>
+<body class="container">
+<div ng-app="myApp" ng-controller="CustomDirectiveController">
+  <select ng-model="selectedName" ng-options="item for item in contentType">
+  </select>
+  {{selectedName}}
+  <my-first-custom-html></my-first-custom-html>
+	<div ng-switch="selectedName">
+        <div ng-switch-when="en"><my-first-custom-html type="en"></my-first-custom-html></div>
+        <div ng-switch-when="de"><my-first-custom-html type="de"></my-first-custom-html></div>
+    </div>
+</div>
+</body>
+</html>
